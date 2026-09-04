@@ -1,0 +1,250 @@
+:root {
+  color-scheme: light dark;
+  font-family: system-ui, -apple-system, sans-serif;
+  line-height: 1.5;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: canvas;
+  color: canvastext;
+}
+
+#root {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 1.5rem;
+}
+
+button {
+  cursor: pointer;
+  font: inherit;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  border: 1px solid #8888;
+  background: transparent;
+  color: inherit;
+}
+
+button.active {
+  background: #4444;
+}
+
+input,
+select {
+  font: inherit;
+  padding: 0.4rem 0.6rem;
+  border-radius: 6px;
+  border: 1px solid #8888;
+  background: transparent;
+  color: inherit;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  max-width: 400px;
+}
+
+label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  font-size: 0.9rem;
+}
+
+.center-message {
+  text-align: center;
+  padding: 4rem 1rem;
+}
+
+.muted {
+  opacity: 0.65;
+  font-size: 0.9rem;
+}
+
+.link-button {
+  background: none;
+  border: none;
+  text-decoration: underline;
+  padding: 0.25rem 0;
+}
+
+.row {
+  display: flex;
+  gap: 0.5rem;
+}
+
+/* Landing */
+
+.landing {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  padding: 3rem 0;
+}
+
+.landing-hero h1 {
+  font-size: 2rem;
+}
+
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  max-width: 320px;
+}
+
+.auth-tabs {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.google-button {
+  background: #4285f4;
+  color: white;
+  border: none;
+}
+
+.divider {
+  text-align: center;
+  opacity: 0.5;
+  font-size: 0.85rem;
+}
+
+.form-error {
+  color: #d33;
+}
+
+.form-message {
+  color: #2a2;
+}
+
+/* App shell */
+
+.app-shell {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.top-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.tabs {
+  display: flex;
+  gap: 0.5rem;
+}
+
+/* Dashboard */
+
+.dashboard {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.dashboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.active-book-card {
+  border: 1px solid #8886;
+  border-radius: 10px;
+  padding: 1rem;
+}
+
+.pages-stat {
+  font-size: 1.4rem;
+  font-weight: 600;
+}
+
+.progress-bar {
+  width: 100%;
+  height: 8px;
+  background: #8884;
+  border-radius: 4px;
+  overflow: hidden;
+  margin-top: 0.5rem;
+}
+
+.progress-fill {
+  height: 100%;
+  background: #4a9;
+}
+
+/* Book prompt / search */
+
+.book-prompt {
+  border: 1px solid #d90;
+  border-radius: 10px;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.queued-books {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.queued-books li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.book-search {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  max-width: 420px;
+}
+
+.book-search form {
+  flex-direction: row;
+}
+
+.book-results {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.book-results button {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  width: 100%;
+  text-align: left;
+}
+
+.book-results img {
+  width: 32px;
+  height: auto;
+}
+
+.book-list {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
