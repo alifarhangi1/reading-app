@@ -1,4 +1,5 @@
 import { NavLink } from 'react-router-dom'
+import { BrandLockup } from './Brand'
 
 const NAV_ITEMS = [
   { to: '/shelf', label: 'shelf' },
@@ -18,7 +19,7 @@ export function Sidebar({ collapsed, drawerOpen, onNavigate, onSignOut }: Props)
   return (
     <aside className={`sidebar${collapsed ? ' is-collapsed' : ''}${drawerOpen ? ' is-open' : ''}`}>
       <div className="sidebar-inner">
-        <span className="brand">PAGE DEBT</span>
+        <BrandLockup size={26} />
 
         <nav className="sidebar-nav">
           {NAV_ITEMS.map((item) => (

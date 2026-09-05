@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { PaperBook } from './PaperBook'
+import { BrandLockup } from './Brand'
 import { formatHm, pagesFromMinutes, DEFAULT_MINUTES_PER_PAGE } from '../lib/calculations'
 
 /*
@@ -23,6 +24,7 @@ export function Landing() {
   return (
     <div className="marketing">
       <header className="marketing-header">
+        <BrandLockup />
         <Link to="/signin">log in</Link>
       </header>
 

@@ -3,6 +3,7 @@ import type { FormEvent } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabase'
 import { PaperBook } from './PaperBook'
+import { BrandLockup } from './Brand'
 
 function GoogleMark() {
   return (
@@ -68,6 +69,7 @@ export function AuthPage({ mode }: Props) {
   return (
     <div className="marketing">
       <header className="marketing-header">
+        <BrandLockup />
         <button type="button" className="link-plain" onClick={() => navigate(-1)}>
           ← back
         </button>

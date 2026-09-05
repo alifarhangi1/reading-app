@@ -37,11 +37,15 @@ p {
   margin: 0;
 }
 
+/* Patrick Hand is the brand type (design/brandAssets.pdf), so it is the single
+   handwriting voice — the wordmark and these callouts had been two different
+   scripts sitting on the same screen. Sized smaller than the Caveat it replaces
+   because its x-height is much larger. */
 .handwritten {
-  font-family: 'Caveat', ui-rounded, cursive;
-  font-weight: 500;
-  font-size: 1.35em;
-  line-height: 1.25;
+  font-family: 'Patrick Hand', cursive;
+  font-weight: 400;
+  font-size: 1.15em;
+  line-height: 1.3;
 }
 
 .muted {
@@ -225,10 +229,25 @@ legend {
   gap: 1.75rem;
 }
 
+/* Lockup from design/brandAssets.pdf — mark plus the all-lowercase wordmark. */
 .brand {
-  font-weight: 600;
-  letter-spacing: 0.08em;
-  font-size: 0.95rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  text-decoration: none;
+  color: var(--ink);
+}
+
+.brand-mark {
+  flex-shrink: 0;
+  display: block;
+}
+
+.brand-wordmark {
+  font-family: 'Patrick Hand', cursive;
+  font-size: 1.15rem;
+  line-height: 1;
+  white-space: nowrap;
 }
 
 .sidebar-nav {
@@ -968,7 +987,9 @@ legend {
 
 .marketing-header {
   display: flex;
-  justify-content: flex-end;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
   min-height: 2.5rem;
 }
 
