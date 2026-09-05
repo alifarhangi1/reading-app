@@ -3,6 +3,12 @@ import type { FormEvent } from 'react'
 import type { Book, NewBookInput, Settings as SettingsType, TrackedAppRow } from '../lib/types'
 import { BookSearch } from './BookSearch'
 
+/** Restates the stored minutes-per-page as the pages-per-hour people think in. */
+function paceHint(minutesPerPage: number): string {
+  if (!minutesPerPage || minutesPerPage <= 0) return 'Enter a pace above zero.'
+  return `about ${Math.round(60 / minutesPerPage)} pages an hour`
+}
+
 interface Props {
   settings: SettingsType
   books: Book[]
@@ -83,13 +89,16 @@ export function Settings({
 
           <label>
             Reading pace (minutes per page)
+            {/* step 0.05, not 0.1: the 1.25 default is not on a 0.1 grid from
+                min, which made the field invalid and blocked saving entirely. */}
             <input
               type="number"
-              min={0.1}
-              step={0.1}
+              min={0.05}
+              step={0.05}
               value={form.default_minutes_per_page}
               onChange={(e) => setForm({ ...form, default_minutes_per_page: parseFloat(e.target.value) || 0 })}
             />
+            <span className="field-hint">{paceHint(form.default_minutes_per_page)}</span>
           </label>
 
           <label>

@@ -1412,3 +1412,8 @@ legend {
     transition: none;
   }
 }
+
+.field-hint {
+  color: var(--ink-soft);
+  font-size: 0.8rem;
+}
