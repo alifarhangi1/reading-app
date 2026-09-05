@@ -56,12 +56,6 @@ p {
   color: var(--ink-soft);
 }
 
-.center-message {
-  text-align: center;
-  padding: 4rem 1rem;
-  color: var(--ink-soft);
-}
-
 /* Controls */
 
 button {
@@ -995,74 +989,420 @@ legend {
   }
 }
 
-/* ---------- Landing ---------- */
+/* ---------- Logged-out pages (landing / auth) ---------- */
 
-.landing {
+.marketing {
   min-height: 100vh;
   background: var(--cream);
   display: flex;
-  align-items: center;
-  padding: 3rem 1.5rem;
+  flex-direction: column;
+  padding: 1.5rem 2rem 4rem;
 }
 
-.landing-inner {
+.marketing-header {
+  display: flex;
+  justify-content: flex-end;
+  min-height: 2.5rem;
+}
+
+.marketing-header a,
+.link-plain {
+  color: var(--ink-soft);
+  text-decoration: none;
+  background: none;
+  border: none;
+  font: inherit;
+  cursor: pointer;
+  padding: 0;
+}
+
+.marketing-header a:hover,
+.link-plain:hover {
+  color: var(--ink);
+}
+
+.marketing-body {
+  flex: 1;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr);
+  align-items: center;
+  gap: 4rem;
+  max-width: 1100px;
   width: 100%;
-  max-width: 34rem;
-  margin: 0 auto;
+  margin-inline: auto;
+}
+
+.marketing-figure {
+  display: flex;
+  justify-content: center;
+}
+
+.marketing-content {
   display: flex;
   flex-direction: column;
-  gap: 2.5rem;
+  gap: 1.5rem;
+  max-width: 34rem;
 }
 
-.landing-hero .brand {
-  display: block;
+.landing-headline {
+  font-size: clamp(2rem, 4vw, 2.9rem);
+  line-height: 1.18;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+}
+
+/* The two values the slider rewrites, marked as live rather than static copy. */
+.dashed-value {
+  color: var(--accent);
+  border-bottom: 2px dashed var(--accent);
+  padding-bottom: 0.1rem;
+  white-space: nowrap;
+}
+
+.landing-sub {
   color: var(--ink-soft);
-  margin-bottom: 1.5rem;
-}
-
-.landing-hero h1 {
-  font-size: 2.25rem;
-  line-height: 1.15;
-  margin-bottom: 0.85rem;
-}
-
-.landing-hero p {
-  color: var(--ink-soft);
+  font-size: 1.05rem;
   max-width: 30rem;
 }
 
-.auth-form {
+.slider-card {
+  border: 1px solid var(--ink);
+  border-radius: 12px;
+  background: var(--paper);
+  padding: 1.1rem 1.25rem 0.9rem;
   display: flex;
   flex-direction: column;
-  gap: 0.9rem;
-  max-width: 22rem;
+  gap: 0.75rem;
+  max-width: 34rem;
 }
 
-.auth-tabs {
+.slider-value {
+  font-variant-numeric: tabular-nums;
+}
+
+.slider-ticks {
   display: flex;
-  gap: 0.5rem;
-}
-
-.auth-tabs button {
-  background: transparent;
+  justify-content: space-between;
   color: var(--ink-soft);
-  border-color: var(--rule);
+  font-size: 0.85rem;
 }
 
-.auth-tabs button.active {
+.slider {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 12px;
+  padding: 0;
+  border: none;
+  border-radius: 999px;
+  background: linear-gradient(
+    to right,
+    var(--accent) 0 var(--fill),
+    #e8e4dc var(--fill) 100%
+  );
+}
+
+.slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 26px;
+  height: 26px;
+  border-radius: 999px;
+  background: var(--paper);
+  border: 1px solid var(--ink);
+  cursor: pointer;
+}
+
+.slider::-moz-range-thumb {
+  width: 26px;
+  height: 26px;
+  border-radius: 999px;
+  background: var(--paper);
+  border: 1px solid var(--ink);
+  cursor: pointer;
+}
+
+.button-link {
+  align-self: flex-start;
   background: var(--ink);
   color: var(--paper);
-  border-color: var(--ink);
+  border: 1px solid var(--ink);
+  border-radius: 10px;
+  padding: 0.85rem 1.6rem;
+  text-decoration: none;
+}
+
+.auth-headline {
+  font-size: clamp(1.75rem, 3.2vw, 2.4rem);
+  font-weight: 500;
+  letter-spacing: -0.01em;
+}
+
+/* Segmented control, per 5a/5b — one bordered box, halves swap fill. */
+.auth-tabs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  border: 1px solid var(--ink);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.auth-tabs a {
+  padding: 0.75rem 1rem;
+  text-align: center;
+  text-decoration: none;
+  color: var(--ink-soft);
+  background: var(--paper);
+}
+
+.auth-tabs a.active {
+  background: var(--ink);
+  color: var(--paper);
 }
 
 .google-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  width: 100%;
+  padding: 0.85rem 1rem;
   background: var(--paper);
   color: var(--ink);
-  border-color: var(--ink);
+  border: 1px solid var(--ink);
+  border-radius: 10px;
 }
 
-.divider {
-  text-align: center;
-  color: var(--ink-faint);
+.or-divider {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  color: var(--ink-soft);
+  font-size: 0.9rem;
+}
+
+.or-divider::before,
+.or-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--rule);
+}
+
+.marketing-content form input {
+  padding: 0.85rem 0.9rem;
+  border-color: var(--ink);
+  border-radius: 10px;
+}
+
+.marketing-content form button[type='submit'] {
+  padding: 0.9rem 1rem;
+  border-radius: 10px;
+  margin-top: 0.25rem;
+}
+
+@media (max-width: 860px) {
+  .marketing-body {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 2rem;
+  }
+
+  .marketing-figure {
+    order: 2;
+  }
+
+  .marketing {
+    padding: 1.25rem 1.25rem 3rem;
+  }
+}
+
+/* ---------- Paper book illustration ---------- */
+
+.paper-book {
+  position: relative;
+  width: clamp(11rem, 20vw, 14rem);
+}
+
+/* The offset block behind the card, giving it depth without a soft shadow. */
+.paper-book::after {
+  content: '';
+  position: absolute;
+  inset: 0.55rem -0.55rem -0.55rem 0.55rem;
+  background: var(--ink);
+  border-radius: 6px;
+  z-index: 0;
+}
+
+.paper-book.is-dashed::after {
+  display: none;
+}
+
+.paper-book-card {
+  position: relative;
+  z-index: 1;
+  aspect-ratio: 2 / 2.7;
+  background: var(--paper);
+  border: 1px solid var(--ink);
+  border-radius: 6px;
+  padding: 1.4rem 1.2rem;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.paper-book.is-dashed .paper-book-card {
+  border-style: dashed;
+  border-color: var(--ink-faint);
+  align-items: center;
+  justify-content: center;
+}
+
+.paper-book-empty {
+  color: var(--ink-soft);
+}
+
+.paper-book-lines {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  flex: 1;
+}
+
+.paper-line {
+  height: 0.75rem;
+  border-radius: 2px;
+  background: var(--rule);
+  opacity: 0.35;
+  transition: opacity 200ms ease, background-color 200ms ease;
+}
+
+.paper-line.is-inked {
+  opacity: 1;
+}
+
+.paper-line.is-title,
+.paper-line.is-title-short {
+  background: var(--ink);
+  height: 0.9rem;
+}
+
+.paper-line.is-title-short {
+  width: 55%;
+  margin-bottom: 0.6rem;
+}
+
+.paper-line.is-body {
+  background: var(--shelf-stripe);
+  height: 0.55rem;
+}
+
+.paper-line.is-body-short {
+  background: var(--shelf-stripe);
+  height: 0.55rem;
+  width: 70%;
+}
+
+.paper-book-label {
+  color: var(--ink-soft);
   font-size: 0.85rem;
+  font-variant-numeric: tabular-nums;
+}
+
+/* 60%-wide highlight sweeping left to right while the fetch is open (spec 6a). */
+.paper-book-shimmer {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  background: linear-gradient(
+    100deg,
+    transparent 0%,
+    #fbede6cc 30%,
+    #fbede6cc 50%,
+    transparent 80%
+  );
+  background-size: 60% 100%;
+  background-repeat: no-repeat;
+  animation: shimmer 1.6s linear infinite;
+}
+
+@keyframes shimmer {
+  from {
+    background-position: -70% 0;
+  }
+  to {
+    background-position: 170% 0;
+  }
+}
+
+/* ---------- Loading ---------- */
+
+.loading-screen {
+  min-height: 100vh;
+  background: var(--cream);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1.25rem;
+  padding: 2rem 1.5rem;
+  text-align: center;
+}
+
+.loading-bar {
+  width: min(25rem, 100%);
+  height: 18px;
+  border: 1px solid var(--ink);
+  border-radius: 4px;
+  background: var(--paper);
+  overflow: hidden;
+}
+
+.loading-bar-fill {
+  height: 100%;
+  background: var(--ink);
+  transition: width 200ms ease;
+}
+
+.loading-status {
+  font-size: 1.15rem;
+}
+
+.loading-hint {
+  color: var(--ink-soft);
+  font-size: 0.9rem;
+}
+
+.loading-slow {
+  border: 1px solid var(--accent);
+  background: var(--accent-wash);
+  border-radius: 10px;
+  padding: 1rem 1.25rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.85rem;
+  max-width: 26rem;
+}
+
+.shelf-empty {
+  min-height: 55vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1.25rem;
+  text-align: center;
+}
+
+/* Spec 6a: drop the shimmer, keep the bar. */
+@media (prefers-reduced-motion: reduce) {
+  .paper-book-shimmer {
+    display: none;
+  }
+
+  .loading-bar-fill,
+  .paper-line {
+    transition: none;
+  }
 }

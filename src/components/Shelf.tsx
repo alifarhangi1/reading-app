@@ -4,6 +4,7 @@ import { yesterdayIso } from '../lib/dates'
 import type { Book, ScreenTimeEntry, ReadingLogEntry, Settings, NewBookInput } from '../lib/types'
 import { BookPrompt } from './BookPrompt'
 import { BookCover } from './BookCover'
+import { PaperBook } from './PaperBook'
 
 interface Props {
   books: Book[]
@@ -33,14 +34,12 @@ export function Shelf({
 
   if (!activeBook) {
     return (
-      <div className="shelf">
-        <p className="shelf-label">currently reading</p>
-        <div className="shelf-empty">
-          <p>No book on the shelf yet.</p>
-          <p className="muted">
-            Add one from <Link to="/settings">settings</Link> to start counting.
-          </p>
-        </div>
+      <div className="shelf-empty">
+        <PaperBook label="no book yet" dashed />
+        <p className="loading-hint">next: pick the book you're reading</p>
+        <Link to="/settings" className="button-link">
+          pick your book
+        </Link>
       </div>
     )
   }

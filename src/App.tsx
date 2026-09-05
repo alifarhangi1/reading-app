@@ -19,6 +19,8 @@ import {
 import { todayIso } from './lib/dates'
 import type { Book, ScreenTimeEntry, ReadingLogEntry, Settings as SettingsType, TrackedAppRow, NewBookInput } from './lib/types'
 import { Landing } from './components/Landing'
+import { AuthPage } from './components/AuthPage'
+import { LoadingScreen } from './components/LoadingScreen'
 import { Shelf } from './components/Shelf'
 import { DailyLog } from './components/DailyLog'
 import { History } from './components/History'
@@ -54,6 +56,11 @@ function maybeNotifyToday(entries: ScreenTimeEntry[], activeBook: Book | null, s
   }
 }
 
+/* One boot progression: the auth check, then the five data requests. */
+const BOOT_STEPS = 6
+/** Floor so a fast load can't flash the screen (spec 6a). */
+const MIN_LOADING_MS = 600
+
 function App() {
   const [session, setSession] = useState<Session | null | undefined>(undefined)
   const [books, setBooks] = useState<Book[]>([])
@@ -61,30 +68,48 @@ function App() {
   const [readingLog, setReadingLog] = useState<ReadingLogEntry[]>([])
   const [trackedApps, setTrackedApps] = useState<TrackedAppRow[]>([])
   const [settings, setSettings] = useState<SettingsType | null>(null)
-  const [loading, setLoading] = useState(false)
+  const [loadedSteps, setLoadedSteps] = useState(0)
+  const [minElapsed, setMinElapsed] = useState(false)
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data }) => setSession(data.session))
+    const t = window.setTimeout(() => setMinElapsed(true), MIN_LOADING_MS)
+    return () => window.clearTimeout(t)
+  }, [])
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data }) => {
+      setSession(data.session)
+      setLoadedSteps((n) => Math.max(n, 1))
+    })
     const { data: sub } = supabase.auth.onAuthStateChange((_event, s) => setSession(s))
     return () => sub.subscription.unsubscribe()
   }, [])
 
   const refresh = useCallback(async () => {
-    if (!session?.user) return
-    setLoading(true)
+    const user = session?.user
+    if (!user) return
+    // Each request bumps the counter as it lands, so the bar and the skeleton
+    // reflect real work rather than a timer.
+    let done = 1
+    const step = <T,>(p: Promise<T>): Promise<T> =>
+      p.then((v) => {
+        done += 1
+        setLoadedSteps((n) => Math.max(n, done))
+        return v
+      })
+
     const [b, e, r, t, s] = await Promise.all([
-      fetchBooks(session.user.id),
-      fetchEntries(session.user.id),
-      fetchReadingLog(session.user.id),
-      fetchTrackedApps(session.user.id),
-      fetchSettings(session.user.id),
+      step(fetchBooks(user.id)),
+      step(fetchEntries(user.id)),
+      step(fetchReadingLog(user.id)),
+      step(fetchTrackedApps(user.id)),
+      step(fetchSettings(user.id)),
     ])
     setBooks(b)
     setEntries(e)
     setReadingLog(r)
     setTrackedApps(t)
     setSettings(s)
-    setLoading(false)
     maybeNotifyToday(e, b.find((x) => x.id === s.active_book_id) ?? null, s)
   }, [session])
 
@@ -92,8 +117,23 @@ function App() {
     if (session?.user) refresh()
   }, [session, refresh])
 
-  if (session === undefined) return <div className="center-message">Loading…</div>
-  if (session === null) return <Landing />
+  // The minimum-duration floor applies only once signed in — a logged-out
+  // visitor has no pages to count, so the landing page shouldn't wait on it.
+  const booting = session === undefined || (session !== null && (!settings || !minElapsed))
+  if (booting) return <LoadingScreen loaded={loadedSteps} total={BOOT_STEPS} onRetry={refresh} />
+
+  if (session === null) {
+    return (
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<Landing />} />
+          <Route path="/join" element={<AuthPage mode="sign-up" />} />
+          <Route path="/signin" element={<AuthPage mode="sign-in" />} />
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
+      </BrowserRouter>
+    )
+  }
 
   const userId = session.user.id
 
@@ -171,8 +211,7 @@ function App() {
     await refresh()
   }
 
-  if (loading && !settings) return <div className="center-message">Loading your data…</div>
-  if (!settings) return null
+  if (!settings) return null // unreachable: `booting` above covers it, kept for narrowing
 
   const activeBook = books.find((b) => b.id === settings.active_book_id) ?? null
 
