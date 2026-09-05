@@ -1,28 +1,20 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { PaperBook } from './PaperBook'
-import { formatHm } from '../lib/calculations'
-
-/*
- * Pace used only for the landing-page illustration. The wireframe's own numbers
- * (2h40m -> 64 pages) imply 24 pages/hour; its SPEC note reads "time / 30 min x
- * 24 pages", which would give 128 for the same input. Following the drawn value,
- * since the daily-log wireframes show 64 for 2h40m too.
- */
-const DEMO_PAGES_PER_HOUR = 24
+import { formatHm, pagesFromMinutes, DEFAULT_MINUTES_PER_PAGE } from '../lib/calculations'
 
 /*
  * The SPEC asks for 15-minute steps AND a 2h40m default, which can't both hold:
  * 160 isn't a multiple of 15, so the handle would snap to 165 while the label
- * still read "2h 40m". Stepping by 10 keeps the drawn default reachable, since
- * 2h40m -> 64 pages is the number repeated across the other wireframes too.
+ * still read "2h 40m". Stepping by 10 keeps the drawn default reachable.
  */
 const STEP_MINUTES = 10
 const MAX_MINUTES = 8 * 60
 const DEFAULT_MINUTES = 160
 
+/** Same pace the signed-in app uses, so the promise here matches the product. */
 function pagesFor(minutes: number): number {
-  return Math.round((minutes / 60) * DEMO_PAGES_PER_HOUR)
+  return Math.round(pagesFromMinutes(minutes, DEFAULT_MINUTES_PER_PAGE))
 }
 
 export function Landing() {

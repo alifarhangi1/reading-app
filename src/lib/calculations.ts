@@ -1,5 +1,17 @@
 import type { Book, ScreenTimeEntry, ReadingLogEntry, Settings } from './types'
 
+/*
+ * One reading pace for the whole app — the settings default, and the landing
+ * page's illustration.
+ *
+ * 1.25 min/page = 48 pages/hour. At a typical ~300 words per page that implies
+ * ~240 wpm, which matches the measured adult silent-reading average (Brysbaert
+ * 2019 meta-analysis: ~238 wpm for non-fiction). The alternatives on the table
+ * were 2.0 and 2.5 min/page, implying 150 and 120 wpm — far below what adults
+ * actually read at, so they'd understate the debt.
+ */
+export const DEFAULT_MINUTES_PER_PAGE = 1.25
+
 export function effectiveMinutesPerPage(book: Book | null, settings: Settings): number {
   return book?.minutes_per_page_override ?? settings.default_minutes_per_page
 }

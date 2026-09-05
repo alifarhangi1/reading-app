@@ -1021,12 +1021,18 @@ legend {
   color: var(--ink);
 }
 
+/*
+ * Both tracks hug their content and the pair centres, so the book sits right
+ * beside the text (~52px apart in 4a) instead of floating in the middle of a
+ * half-width column.
+ */
 .marketing-body {
   flex: 1;
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr);
+  grid-template-columns: auto minmax(0, 34rem);
+  justify-content: center;
   align-items: center;
-  gap: 4rem;
+  gap: 3.25rem;
   max-width: 1100px;
   width: 100%;
   margin-inline: auto;

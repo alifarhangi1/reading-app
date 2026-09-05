@@ -1,6 +1,7 @@
 import { supabase } from './supabase'
 import type { Book, ScreenTimeEntry, ReadingLogEntry, Settings, TrackedAppRow } from './types'
 import { DEFAULT_TRACKED_APPS } from './types'
+import { DEFAULT_MINUTES_PER_PAGE } from './calculations'
 
 export async function fetchSettings(userId: string): Promise<Settings> {
   const { data, error } = await supabase.from('settings').select('*').eq('user_id', userId).maybeSingle()
@@ -10,7 +11,7 @@ export async function fetchSettings(userId: string): Promise<Settings> {
   const defaults: Settings = {
     user_id: userId,
     start_date: new Date().toISOString().slice(0, 10),
-    default_minutes_per_page: 2.0,
+    default_minutes_per_page: DEFAULT_MINUTES_PER_PAGE,
     active_book_id: null,
   }
   const { data: inserted, error: insertError } = await supabase.from('settings').insert(defaults).select().single()
