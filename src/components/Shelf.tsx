@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
-import { computeStats, formatDayMonth } from '../lib/calculations'
+import { computeStats, formatDayMonth, formatHm } from '../lib/calculations'
+import { todayIso } from '../lib/dates'
 import type { Book, ScreenTimeEntry, ReadingLogEntry, Settings, NewBookInput } from '../lib/types'
 import { BookPrompt } from './BookPrompt'
 import { BookCover } from './BookCover'
@@ -27,6 +28,11 @@ export function Shelf({
   const activeBook = books.find((b) => b.id === settings.active_book_id) ?? null
   const stats = computeStats({ entries, readingLog, activeBook, settings })
   const queuedBooks = books.filter((b) => b.status === 'queued')
+
+  const today = todayIso()
+  const todaysEntries = entries.filter((e) => e.date === today)
+  const loggedToday = todaysEntries.length > 0
+  const todaysMinutes = todaysEntries.reduce((sum, e) => sum + e.minutes, 0)
 
   if (!activeBook) {
     return (
@@ -92,6 +98,18 @@ export function Shelf({
                 <span className="value">{Math.round(-stats.debt)} pages</span>
               </div>
             )}
+          </div>
+
+          <div className="shelf-cta">
+            <div>
+              <p className="shelf-cta-title">
+                {loggedToday ? `Today's logged — ${formatHm(todaysMinutes)}.` : "Today isn't logged yet."}
+              </p>
+              <p className="shelf-cta-sub">One number, once a day.</p>
+            </div>
+            <Link to={`/log/${today}`} className="button-link">
+              {loggedToday ? "edit today's log" : 'log social media time'}
+            </Link>
           </div>
         </div>
       </div>
