@@ -2,24 +2,29 @@ import { useState } from 'react'
 import type { FormEvent } from 'react'
 import { searchBooks } from '../lib/bookLookup'
 import type { BookLookupResult } from '../lib/bookLookup'
-import type { BookSource } from '../lib/types'
+import type { BookSource, NewBookInput } from '../lib/types'
 
 interface Props {
-  onAdd: (book: {
-    title: string
-    author: string | null
-    page_count: number
-    source: BookSource
-    cover_url: string | null
-  }) => Promise<void>
+  onAdd: (book: NewBookInput) => Promise<void>
 }
+
+interface Candidate {
+  title: string
+  author: string
+  pageCount: string
+  coverUrl: string | null
+  source: BookSource
+}
+
+type Progress = 'start' | 'in-progress'
 
 export function BookSearch({ onAdd }: Props) {
   const [query, setQuery] = useState('')
   const [results, setResults] = useState<BookLookupResult[]>([])
   const [searching, setSearching] = useState(false)
-  const [manual, setManual] = useState<{ title: string; author: string; source: BookSource; coverUrl: string | null } | null>(null)
-  const [pageCountInput, setPageCountInput] = useState('')
+  const [candidate, setCandidate] = useState<Candidate | null>(null)
+  const [progress, setProgress] = useState<Progress>('start')
+  const [currentPageInput, setCurrentPageInput] = useState('')
   const [submitting, setSubmitting] = useState(false)
 
   async function handleSearch(e: FormEvent) {
@@ -30,40 +35,41 @@ export function BookSearch({ onAdd }: Props) {
     setSearching(false)
   }
 
-  async function pickResult(result: BookLookupResult) {
-    if (result.pageCount) {
-      setSubmitting(true)
-      await onAdd({
-        title: result.title,
-        author: result.author,
-        page_count: result.pageCount,
-        source: result.source,
-        cover_url: result.coverUrl,
-      })
-      setSubmitting(false)
-      resetForm()
-      return
-    }
-    // No page count found — fall through to manual entry, pre-filled.
-    setManual({ title: result.title, author: result.author ?? '', source: result.source, coverUrl: result.coverUrl })
+  function pickResult(result: BookLookupResult) {
+    setCandidate({
+      title: result.title,
+      author: result.author ?? '',
+      pageCount: result.pageCount ? String(result.pageCount) : '',
+      coverUrl: result.coverUrl,
+      source: result.source,
+    })
+    setProgress('start')
+    setCurrentPageInput('')
   }
 
   function startManualEntry() {
-    setManual({ title: query, author: '', source: 'manual', coverUrl: null })
+    setCandidate({ title: query, author: '', pageCount: '', coverUrl: null, source: 'manual' })
+    setProgress('start')
+    setCurrentPageInput('')
   }
 
-  async function submitManual(e: FormEvent) {
+  async function submitCandidate(e: FormEvent) {
     e.preventDefault()
-    if (!manual) return
-    const pageCount = parseInt(pageCountInput, 10)
+    if (!candidate) return
+    const pageCount = parseInt(candidate.pageCount, 10)
     if (!pageCount || pageCount <= 0) return
+
+    const rawStartingPage = progress === 'in-progress' ? parseInt(currentPageInput, 10) || 0 : 0
+    const startingPage = Math.max(0, Math.min(rawStartingPage, pageCount))
+
     setSubmitting(true)
     await onAdd({
-      title: manual.title,
-      author: manual.author || null,
+      title: candidate.title,
+      author: candidate.author || null,
       page_count: pageCount,
-      source: manual.source === 'manual' ? 'manual' : manual.source,
-      cover_url: manual.coverUrl,
+      starting_page: startingPage,
+      source: candidate.source,
+      cover_url: candidate.coverUrl,
     })
     setSubmitting(false)
     resetForm()
@@ -72,28 +78,25 @@ export function BookSearch({ onAdd }: Props) {
   function resetForm() {
     setQuery('')
     setResults([])
-    setManual(null)
-    setPageCountInput('')
+    setCandidate(null)
+    setProgress('start')
+    setCurrentPageInput('')
   }
 
-  if (manual) {
+  if (candidate) {
     return (
-      <form className="book-manual-form" onSubmit={submitManual}>
-        <p>
-          {manual.title !== '' ? `Add "${manual.title}"` : 'Add a book manually'} — enter its page count
-          {manual.author ? ` (${manual.author})` : ''}:
-        </p>
+      <form className="book-search" onSubmit={submitCandidate}>
         <label>
           Title
           <input
-            value={manual.title}
-            onChange={(e) => setManual({ ...manual, title: e.target.value })}
+            value={candidate.title}
+            onChange={(e) => setCandidate({ ...candidate, title: e.target.value })}
             required
           />
         </label>
         <label>
           Author
-          <input value={manual.author} onChange={(e) => setManual({ ...manual, author: e.target.value })} />
+          <input value={candidate.author} onChange={(e) => setCandidate({ ...candidate, author: e.target.value })} />
         </label>
         <label>
           Page count
@@ -101,15 +104,50 @@ export function BookSearch({ onAdd }: Props) {
             type="number"
             min={1}
             required
-            value={pageCountInput}
-            onChange={(e) => setPageCountInput(e.target.value)}
+            value={candidate.pageCount}
+            onChange={(e) => setCandidate({ ...candidate, pageCount: e.target.value })}
           />
         </label>
+
+        <fieldset>
+          <legend>Where are you starting?</legend>
+          <label className="radio-option">
+            <input
+              type="radio"
+              name="progress"
+              checked={progress === 'start'}
+              onChange={() => setProgress('start')}
+            />
+            Starting from the beginning
+          </label>
+          <label className="radio-option">
+            <input
+              type="radio"
+              name="progress"
+              checked={progress === 'in-progress'}
+              onChange={() => setProgress('in-progress')}
+            />
+            Already partway through
+          </label>
+        </fieldset>
+
+        {progress === 'in-progress' && (
+          <label>
+            What page are you on?
+            <input
+              type="number"
+              min={1}
+              value={currentPageInput}
+              onChange={(e) => setCurrentPageInput(e.target.value)}
+            />
+          </label>
+        )}
+
         <div className="row">
           <button type="submit" disabled={submitting}>
-            {submitting ? 'Adding...' : 'Add book'}
+            {submitting ? 'Adding…' : 'Add book'}
           </button>
-          <button type="button" onClick={() => setManual(null)}>
+          <button type="button" className="button-outline" onClick={() => setCandidate(null)}>
             Cancel
           </button>
         </div>
@@ -119,14 +157,14 @@ export function BookSearch({ onAdd }: Props) {
 
   return (
     <div className="book-search">
-      <form onSubmit={handleSearch}>
+      <form className="search-row" onSubmit={handleSearch}>
         <input
-          placeholder="Search for a book title..."
+          placeholder="Search for a book title…"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
         />
         <button type="submit" disabled={searching}>
-          {searching ? 'Searching...' : 'Search'}
+          {searching ? 'Searching…' : 'Search'}
         </button>
       </form>
 
@@ -134,7 +172,7 @@ export function BookSearch({ onAdd }: Props) {
         <ul className="book-results">
           {results.map((r, i) => (
             <li key={i}>
-              <button type="button" onClick={() => pickResult(r)} disabled={submitting}>
+              <button type="button" onClick={() => pickResult(r)}>
                 {r.coverUrl && <img src={r.coverUrl} alt="" />}
                 <span>
                   <strong>{r.title}</strong>

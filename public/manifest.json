@@ -1,10 +1,10 @@
 {
-  "name": "Pages Instead",
-  "short_name": "Pages Instead",
+  "name": "Page Debt",
+  "short_name": "Page Debt",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#111111",
-  "theme_color": "#111111",
+  "background_color": "#F5F1EA",
+  "theme_color": "#F5F1EA",
   "icons": [
     {
       "src": "/favicon.svg",

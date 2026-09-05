@@ -3,14 +3,17 @@ import { AuthForm } from './AuthForm'
 export function Landing() {
   return (
     <div className="landing">
-      <section className="landing-hero">
-        <h1>How many pages could you have read instead?</h1>
-        <p>
-          Log your time on TikTok, Instagram, and YouTube. Pick a book. Watch your
-          scrolling turn into the pages you could've read instead.
-        </p>
-      </section>
-      <AuthForm />
+      <div className="landing-inner">
+        <section className="landing-hero">
+          <span className="brand">PAGE DEBT</span>
+          <h1>How many pages could you have read instead?</h1>
+          <p>
+            Log the time your phone kept today. Pick a book. Watch the scrolling turn
+            into the pages you could've read instead.
+          </p>
+        </section>
+        <AuthForm />
+      </div>
     </div>
   )
 }
