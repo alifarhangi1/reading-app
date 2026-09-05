@@ -13,6 +13,7 @@ import {
   finishBook,
   abandonBook,
   setActiveBook,
+  clearQueuedBooks,
   addTrackedApp,
   setTrackedAppArchived,
 } from './lib/data'
@@ -201,6 +202,11 @@ function App() {
     await refresh()
   }
 
+  async function handleClearQueue() {
+    await clearQueuedBooks(userId)
+    await refresh()
+  }
+
   async function handleAddTrackedApp(name: string) {
     await addTrackedApp(userId, name)
     await refresh()
@@ -217,7 +223,7 @@ function App() {
 
   return (
     <BrowserRouter>
-      <Layout onSignOut={() => supabase.auth.signOut()} onRefresh={refresh}>
+      <Layout onSignOut={() => supabase.auth.signOut()}>
         <Routes>
           <Route
             path="/shelf"
@@ -263,6 +269,7 @@ function App() {
                 onScrapActiveBook={handleScrapActiveBook}
                 onSetTrackedAppArchived={handleSetTrackedAppArchived}
                 onAddBook={handleAddBook}
+                onClearQueue={handleClearQueue}
               />
             }
           />

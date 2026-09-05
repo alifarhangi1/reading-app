@@ -56,6 +56,16 @@ export async function finishBook(bookId: string): Promise<void> {
   if (error) throw error
 }
 
+/**
+ * Empties the queue. Deletes rather than archives: queued books were never
+ * active, so no screen time is attributed to them and there is no history worth
+ * keeping — archiving would just clutter History with books never opened.
+ */
+export async function clearQueuedBooks(userId: string): Promise<void> {
+  const { error } = await supabase.from('books').delete().eq('user_id', userId).eq('status', 'queued')
+  if (error) throw error
+}
+
 export async function abandonBook(bookId: string): Promise<void> {
   const { error } = await supabase.from('books').update({ status: 'abandoned' }).eq('id', bookId)
   if (error) throw error

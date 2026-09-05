@@ -2,7 +2,7 @@ import { useState } from 'react'
 import type { FormEvent } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { upsertEntry, upsertReadingLog } from '../lib/data'
-import { computeStats, effectiveMinutesPerPage, formatDayMonth, formatHm, pagesFromMinutes } from '../lib/calculations'
+import { effectiveMinutesPerPage, formatDayMonth, formatHm, pagesFromMinutes } from '../lib/calculations'
 import { shiftIso, todayIso } from '../lib/dates'
 import type { Book, ReadingLogEntry, ScreenTimeEntry, Settings, TrackedAppRow } from '../lib/types'
 
@@ -136,15 +136,6 @@ export function DailyLog({
   const rate = effectiveMinutesPerPage(activeBook, settings)
   const forfeitedToday = pagesFromMinutes(totalMinutes, rate)
 
-  const priorStats = computeStats({
-    entries: entries.filter((e) => e.date !== date),
-    readingLog: readingLog.filter((r) => r.date !== date),
-    activeBook,
-    settings,
-  })
-  const debtBefore = activeBook ? priorStats.debt : 0
-  const debtAfter = debtBefore + forfeitedToday - pagesRead
-
   return (
     <form className="daily-log" onSubmit={handleConfirm}>
       <div className="log-form">
@@ -276,7 +267,7 @@ export function DailyLog({
 
       <div className="log-panels">
         <div className="panel">
-          <div className="panel-label">= pages forfeited</div>
+          <div className="panel-label">pages forfeited</div>
           <div className="panel-figure">{Math.round(forfeitedToday)}</div>
         </div>
 
@@ -291,10 +282,6 @@ export function DailyLog({
               +
             </button>
           </div>
-        </div>
-
-        <div className="panel-dashed">
-          debt after today: {Math.round(debtBefore)} → {Math.round(debtAfter)} pages
         </div>
       </div>
     </form>

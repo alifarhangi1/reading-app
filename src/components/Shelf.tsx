@@ -1,6 +1,5 @@
 import { Link } from 'react-router-dom'
-import { computeStats, formatHm, formatDayMonth } from '../lib/calculations'
-import { yesterdayIso } from '../lib/dates'
+import { computeStats, formatDayMonth } from '../lib/calculations'
 import type { Book, ScreenTimeEntry, ReadingLogEntry, Settings, NewBookInput } from '../lib/types'
 import { BookPrompt } from './BookPrompt'
 import { BookCover } from './BookCover'
@@ -28,9 +27,6 @@ export function Shelf({
   const activeBook = books.find((b) => b.id === settings.active_book_id) ?? null
   const stats = computeStats({ entries, readingLog, activeBook, settings })
   const queuedBooks = books.filter((b) => b.status === 'queued')
-
-  const yDate = yesterdayIso()
-  const yesterdayMinutes = entries.filter((e) => e.date === yDate).reduce((sum, e) => sum + e.minutes, 0)
 
   if (!activeBook) {
     return (
@@ -96,13 +92,6 @@ export function Shelf({
                 <span className="value">{Math.round(-stats.debt)} pages</span>
               </div>
             )}
-          </div>
-
-          <div className="scroll-row">
-            <div className="scroll-readout">yesterday's scroll — {formatHm(yesterdayMinutes)}</div>
-            <Link className="log-button" to={`/log/${yDate}`}>
-              log
-            </Link>
           </div>
         </div>
       </div>

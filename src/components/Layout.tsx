@@ -1,24 +1,8 @@
 import { useEffect, useState } from 'react'
 import type { ReactNode } from 'react'
-import { useLocation } from 'react-router-dom'
 import { Sidebar } from './Sidebar'
 
 const MOBILE_QUERY = '(max-width: 1023px)'
-
-/*
- * The header carries the page identity, per W2-c. The shelf is deliberately
- * absent: "currently reading" sits immediately below it and a "shelf" label
- * would just repeat that.
- */
-const PAGE_LABELS: Array<[string, string]> = [
-  ['/log', 'daily log'],
-  ['/history', 'history'],
-  ['/settings', 'settings'],
-]
-
-function pageLabelFor(pathname: string): string | null {
-  return PAGE_LABELS.find(([prefix]) => pathname.startsWith(prefix))?.[1] ?? null
-}
 
 function MenuIcon() {
   return (
@@ -28,31 +12,15 @@ function MenuIcon() {
   )
 }
 
-function RefreshIcon() {
-  return (
-    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
-      <path
-        d="M16.5 10a6.5 6.5 0 1 1-1.9-4.6M16.5 3v3.5H13"
-        stroke="currentColor"
-        strokeWidth="1.6"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </svg>
-  )
-}
-
 interface Props {
   children: ReactNode
   onSignOut: () => void
-  onRefresh: () => void
 }
 
-export function Layout({ children, onSignOut, onRefresh }: Props) {
+export function Layout({ children, onSignOut }: Props) {
   const [collapsed, setCollapsed] = useState(() => localStorage.getItem('sidebarCollapsed') === 'true')
   const [drawerOpen, setDrawerOpen] = useState(false)
   const [isMobile, setIsMobile] = useState(() => window.matchMedia(MOBILE_QUERY).matches)
-  const pageLabel = pageLabelFor(useLocation().pathname)
 
   useEffect(() => {
     const mq = window.matchMedia(MOBILE_QUERY)
@@ -107,11 +75,6 @@ export function Layout({ children, onSignOut, onRefresh }: Props) {
             aria-expanded={!navHidden}
           >
             <MenuIcon />
-          </button>
-          <div className="utility-spacer" />
-          {pageLabel && <span className="page-label">{pageLabel}</span>}
-          <button type="button" className="icon-button" onClick={onRefresh} aria-label="Refresh data">
-            <RefreshIcon />
           </button>
         </header>
         <main className="main-content">{children}</main>

@@ -17,6 +17,7 @@ interface Props {
   onScrapActiveBook: () => Promise<void>
   onSetTrackedAppArchived: (id: string, archived: boolean) => Promise<void>
   onAddBook: (book: NewBookInput) => Promise<void>
+  onClearQueue: () => Promise<void>
 }
 
 export function Settings({
@@ -27,13 +28,16 @@ export function Settings({
   onScrapActiveBook,
   onSetTrackedAppArchived,
   onAddBook,
+  onClearQueue,
 }: Props) {
   const [form, setForm] = useState(settings)
   const [saving, setSaving] = useState(false)
   const [scrapping, setScrapping] = useState(false)
+  const [clearing, setClearing] = useState(false)
 
   const activeBook = books.find((b) => b.id === settings.active_book_id) ?? null
   const shelfBooks = books.filter((b) => b.status === 'queued' || b.status === 'active')
+  const queuedBooks = books.filter((b) => b.status === 'queued')
 
   async function handleSubmit(e: FormEvent) {
     e.preventDefault()
@@ -51,6 +55,17 @@ export function Settings({
     setScrapping(true)
     await onScrapActiveBook()
     setScrapping(false)
+  }
+
+  async function handleClearQueue() {
+    const confirmed = window.confirm(
+      `Remove ${queuedBooks.length} queued book${queuedBooks.length === 1 ? '' : 's'}? ` +
+        'They were never started, so nothing logged is affected. Your active book stays.',
+    )
+    if (!confirmed) return
+    setClearing(true)
+    await onClearQueue()
+    setClearing(false)
   }
 
   return (
@@ -72,6 +87,15 @@ export function Settings({
               </li>
             ))}
           </ul>
+        )}
+        {queuedBooks.length > 0 && (
+          <div className="settings-tucked">
+            <button type="button" className="link-button" onClick={handleClearQueue} disabled={clearing}>
+              {clearing
+                ? 'Clearing…'
+                : `Clear the queue (${queuedBooks.length} book${queuedBooks.length === 1 ? '' : 's'})`}
+            </button>
+          </div>
         )}
       </section>
 
