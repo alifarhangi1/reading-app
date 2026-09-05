@@ -29,8 +29,6 @@ export function History({ books, entries, readingLog, settings }: Props) {
 
   return (
     <div>
-      <h1 className="page-title">History</h1>
-
       <section className="section">
         <h2 className="section-title">Daily log</h2>
         {dayRows.length === 0 ? (

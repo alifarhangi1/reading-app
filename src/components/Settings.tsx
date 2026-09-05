@@ -49,8 +49,6 @@ export function Settings({
 
   return (
     <div>
-      <h1 className="page-title">Settings</h1>
-
       <section className="section">
         <h2 className="section-title">Books</h2>
         <BookSearch onAdd={onAddBook} />

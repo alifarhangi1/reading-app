@@ -274,20 +274,47 @@ legend {
   flex-direction: column;
 }
 
-.utility-bar {
+.content-header {
   display: flex;
   align-items: center;
-  gap: 0.25rem;
-  padding: 0.75rem 1rem 0;
+  gap: 1rem;
+  padding: 2rem 2rem 0;
+  max-width: 1400px;
+  width: 100%;
+  margin-inline: auto;
 }
 
 .utility-spacer {
   flex: 1;
 }
 
+/* Boxed, per W1-c/W2-c — the one persistent control, so it reads as a control. */
+.menu-button {
+  width: 3rem;
+  height: 3rem;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--ink);
+  border-radius: 10px;
+  background: var(--paper);
+  color: var(--ink);
+}
+
+.menu-button:hover {
+  background: var(--wash);
+}
+
+.page-label {
+  color: var(--ink-soft);
+}
+
+/* Fills the width the collapsed sidebar frees up (W1-c), rather than sitting
+   in a narrow centred block; the max-width only binds on very wide screens. */
 .main-content {
-  padding: 1.5rem 2.5rem 4rem;
-  max-width: 1040px;
+  padding: 1.75rem 2rem 4rem;
+  max-width: 1400px;
   width: 100%;
   margin-inline: auto;
 }
@@ -333,6 +360,10 @@ legend {
 
   .main-content {
     padding: 1.25rem 1.25rem 3rem;
+  }
+
+  .content-header {
+    padding: 1.25rem 1.25rem 0;
   }
 }
 
@@ -457,8 +488,8 @@ legend {
 .book-figure {
   /* The 85vw term is a width guard: at 50vh a phone's cover would be taller
      than the viewport is wide, so the figure would overflow horizontally. */
-  --cover-h: clamp(16rem, min(50vh, 85vw), 32rem);
-  width: calc(var(--cover-h) * 1.05);
+  --cover-h: clamp(16rem, min(50vh, 78vw), 32rem);
+  width: calc(var(--cover-h) * 1.19);
   max-width: 100%;
   display: flex;
   flex-direction: column;
@@ -469,11 +500,13 @@ legend {
 .book-figure-stage {
   position: relative;
   width: 100%;
-  padding-top: calc(var(--cover-h) * 0.46);
+  padding-top: calc(var(--cover-h) * 0.5);
 }
 
+/* 0.5 + 0.59 > 1, so the shelf's lower edge sits below the cover's — the cover
+   nestles into the shelf rather than resting level with it (W1-c). */
 .book-figure-shelf {
-  height: calc(var(--cover-h) * 0.54);
+  height: calc(var(--cover-h) * 0.59);
   border: 1px solid var(--ink);
   border-radius: 4px;
   background-color: var(--shelf);
@@ -599,9 +632,9 @@ legend {
   margin-bottom: 1.75rem;
 }
 
+/* One line on desktop, per W2-c. */
 .log-question {
   font-size: 1.75rem;
-  max-width: 22rem;
 }
 
 .date-pill {
@@ -911,11 +944,6 @@ legend {
 }
 
 /* ---------- Settings / history ---------- */
-
-.page-title {
-  font-size: 1.6rem;
-  margin-bottom: 1.5rem;
-}
 
 .section {
   margin-bottom: 2.5rem;
