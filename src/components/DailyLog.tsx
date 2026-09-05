@@ -107,10 +107,20 @@ export function DailyLog({
     e.preventDefault()
     if (!isDirty) return
     setSaving(true)
-    // Confirming writes a row for every app, so empty fields land as 0. Mirror
-    // that back into the form or it would read as dirty forever afterwards.
+    // Only write apps the user actually filled, or that already have a saved row
+    // (so clearing one back to zero still records the zero). Writing every app
+    // unconditionally left 0-minute rows behind that made an untouched day look
+    // logged. `written` mirrors exactly what was stored, so the dirty check
+    // settles afterwards.
     const written: TimeFields = {}
     for (const app of activeApps) {
+      const field = times[app.id]
+      const filled = (field?.h ?? '') !== '' || (field?.m ?? '') !== ''
+      const hadRow = entries.some((e) => e.date === date && e.app_id === app.id)
+      if (!filled && !hadRow) {
+        written[app.id] = { h: '', m: '' }
+        continue
+      }
       const minutes = minutesFor(app.id)
       await upsertEntry({
         user_id: userId,
@@ -140,7 +150,13 @@ export function DailyLog({
     <form className="daily-log" onSubmit={handleConfirm}>
       <div className="log-form">
         <div className="log-head">
-          <h1 className="log-question handwritten">how much did the phone keep today?</h1>
+          {/* Must name the selected day: a hardcoded "today?" while editing
+              another date invites logging numbers against the wrong one. */}
+          <h1 className="log-question handwritten">
+            {date === today
+              ? 'how much did the phone keep today?'
+              : `how much did the phone keep on ${formatDayMonth(date)}?`}
+          </h1>
           <button type="button" className="date-pill" onClick={() => setDateOpen((o) => !o)} aria-expanded={dateOpen}>
             {formatDayMonth(date)} ▾
           </button>

@@ -30,9 +30,13 @@ export function Shelf({
   const queuedBooks = books.filter((b) => b.status === 'queued')
 
   const today = todayIso()
-  const todaysEntries = entries.filter((e) => e.date === today)
-  const loggedToday = todaysEntries.length > 0
-  const todaysMinutes = todaysEntries.reduce((sum, e) => sum + e.minutes, 0)
+  const todaysMinutes = entries
+    .filter((e) => e.date === today)
+    .reduce((sum, e) => sum + e.minutes, 0)
+  const todaysPages = readingLog.find((r) => r.date === today)?.pages_read ?? 0
+  // Requires something actually recorded, so leftover zero rows can't make an
+  // untouched day claim to be logged.
+  const loggedToday = todaysMinutes > 0 || todaysPages > 0
 
   if (!activeBook) {
     return (
