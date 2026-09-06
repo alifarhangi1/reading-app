@@ -22,7 +22,7 @@ export function Landing() {
   const [minutes, setMinutes] = useState(DEFAULT_MINUTES)
 
   return (
-    <div className="marketing">
+    <div className="marketing is-landing">
       <header className="marketing-header">
         <BrandLockup />
         <Link to="/signin">log in</Link>

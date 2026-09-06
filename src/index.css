@@ -1629,3 +1629,58 @@ legend {
   color: var(--accent);
   font-weight: 500;
 }
+
+/* ---------- Landing entrance ---------- */
+
+@keyframes landing-rise {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* One page-load sequence rather than scattered effects: the header, the book,
+   then the copy stepping down the column. Scoped to the landing so the auth
+   pages, which share these classes, stay still. `both` holds the start state
+   through the delay so nothing flashes in at its final position first. */
+.is-landing .marketing-header,
+.is-landing .marketing-figure,
+.is-landing .marketing-content > * {
+  animation: landing-rise 520ms cubic-bezier(0.22, 0.7, 0.3, 1) both;
+}
+
+.is-landing .marketing-header {
+  animation-delay: 0ms;
+}
+
+.is-landing .marketing-figure {
+  animation-delay: 120ms;
+}
+
+.is-landing .marketing-content > *:nth-child(1) {
+  animation-delay: 80ms;
+}
+
+.is-landing .marketing-content > *:nth-child(2) {
+  animation-delay: 160ms;
+}
+
+.is-landing .marketing-content > *:nth-child(3) {
+  animation-delay: 240ms;
+}
+
+.is-landing .marketing-content > *:nth-child(4) {
+  animation-delay: 320ms;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .is-landing .marketing-header,
+  .is-landing .marketing-figure,
+  .is-landing .marketing-content > * {
+    animation: none;
+  }
+}
