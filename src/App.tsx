@@ -23,6 +23,7 @@ import { Landing } from './components/Landing'
 import { AuthPage } from './components/AuthPage'
 import { LoadingScreen } from './components/LoadingScreen'
 import { Shelf } from './components/Shelf'
+import { AllDays } from './components/AllDays'
 import { DailyLog } from './components/DailyLog'
 import { History } from './components/History'
 import { Settings } from './components/Settings'
@@ -282,6 +283,10 @@ function App() {
                 onSaved={refresh}
               />
             }
+          />
+          <Route
+            path="/days"
+            element={<AllDays books={books} entries={entries} readingLog={readingLog} settings={settings} />}
           />
           <Route
             path="/history"

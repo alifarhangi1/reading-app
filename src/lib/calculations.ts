@@ -29,6 +29,14 @@ export function formatHm(minutes: number): string {
   return `${hours}h ${String(mins).padStart(2, '0')}m`
 }
 
+/** "wed 3 Sep" — how the day stepper names a past day. */
+export function formatWeekdayDayMonth(isoDate: string): string {
+  const d = new Date(isoDate.length > 10 ? isoDate : `${isoDate}T00:00:00`)
+  if (Number.isNaN(d.getTime())) return ''
+  const weekday = d.toLocaleString('en-US', { weekday: 'short' }).toLowerCase()
+  return `${weekday} ${formatDayMonth(isoDate)}`
+}
+
 /** "12 Aug" — the meta-line date format used on the shelf. */
 export function formatDayMonth(isoDate: string): string {
   const d = new Date(isoDate.length > 10 ? isoDate : `${isoDate}T00:00:00`)
