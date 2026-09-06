@@ -17,9 +17,22 @@ export function AllDays({ books, entries, readingLog, settings }: Props) {
   // point is comparing days to each other, not the two values within a day.
   const max = globalMax(days)
 
+  // The log tab will happily record a day earlier than the start date, but the
+  // shelf and this list both stop there — so say so rather than just hiding it.
+  const hiddenBefore =
+    entries.some((e) => e.date < settings.start_date) ||
+    readingLog.some((r) => r.date < settings.start_date)
+
   return (
     <div className="all-days">
       <h1 className="all-days-title">all days</h1>
+
+      {hiddenBefore && (
+        <p className="days-note">
+          Some logged days fall before {formatDayMonth(settings.start_date)} and aren't counted.{' '}
+          <Link to="/settings">Change the start date</Link> to include them.
+        </p>
+      )}
 
       {days.length === 0 ? (
         <p className="muted">Nothing logged yet.</p>

@@ -133,7 +133,7 @@ export function Shelf({
 
           <div className="stat-block">
             <div className="stat-row">
-              <span>pages read today</span>
+              <span>pages read</span>
               <span className="value">{Math.round(day.pagesRead)}</span>
             </div>
             <div className="bar">
@@ -143,7 +143,7 @@ export function Shelf({
 
           <div className="stat-block">
             <div className="stat-row is-debt">
-              <span>pages you could've read today</span>
+              <span>pages you could've read</span>
               <span className="value">{Math.round(day.forfeited)}</span>
             </div>
             <div className="bar is-debt">

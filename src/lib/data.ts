@@ -2,6 +2,7 @@ import { supabase } from './supabase'
 import type { Book, ScreenTimeEntry, ReadingLogEntry, Settings, TrackedAppRow } from './types'
 import { DEFAULT_TRACKED_APPS } from './types'
 import { DEFAULT_MINUTES_PER_PAGE } from './calculations'
+import { todayIso } from './dates'
 
 export async function fetchSettings(userId: string): Promise<Settings> {
   const { data, error } = await supabase.from('settings').select('*').eq('user_id', userId).maybeSingle()
@@ -10,7 +11,10 @@ export async function fetchSettings(userId: string): Promise<Settings> {
 
   const defaults: Settings = {
     user_id: userId,
-    start_date: new Date().toISOString().slice(0, 10),
+    // Local, not toISOString(): UTC is ahead of western timezones late in the
+    // day, so a signup after ~8pm ET would set the start date to tomorrow and
+    // immediately hide the user's own first day.
+    start_date: todayIso(),
     default_minutes_per_page: DEFAULT_MINUTES_PER_PAGE,
     active_book_id: null,
   }
