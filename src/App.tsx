@@ -71,6 +71,7 @@ function App() {
   const [settings, setSettings] = useState<SettingsType | null>(null)
   const [loadedSteps, setLoadedSteps] = useState(0)
   const [minElapsed, setMinElapsed] = useState(false)
+  const [bootError, setBootError] = useState<string | null>(null)
 
   useEffect(() => {
     const t = window.setTimeout(() => setMinElapsed(true), MIN_LOADING_MS)
@@ -86,9 +87,12 @@ function App() {
     return () => sub.subscription.unsubscribe()
   }, [])
 
+  // Keyed on the user id, not the session object: Supabase emits several auth
+  // events on sign-in, each with a fresh session object, which would otherwise
+  // give this callback a new identity and fire a second concurrent boot.
+  const authUserId = session?.user?.id
   const refresh = useCallback(async () => {
-    const user = session?.user
-    if (!user) return
+    if (!authUserId) return
     // Each request bumps the counter as it lands, so the bar and the skeleton
     // reflect real work rather than a timer.
     let done = 1
@@ -99,24 +103,49 @@ function App() {
         return v
       })
 
-    const [b, e, r, t, s] = await Promise.all([
-      step(fetchBooks(user.id)),
-      step(fetchEntries(user.id)),
-      step(fetchReadingLog(user.id)),
-      step(fetchTrackedApps(user.id)),
-      step(fetchSettings(user.id)),
-    ])
-    setBooks(b)
-    setEntries(e)
-    setReadingLog(r)
-    setTrackedApps(t)
-    setSettings(s)
-    maybeNotifyToday(e, b.find((x) => x.id === s.active_book_id) ?? null, s)
-  }, [session])
+    try {
+      setBootError(null)
+      const [b, e, r, t, s] = await Promise.all([
+        step(fetchBooks(authUserId)),
+        step(fetchEntries(authUserId)),
+        step(fetchReadingLog(authUserId)),
+        step(fetchTrackedApps(authUserId)),
+        step(fetchSettings(authUserId)),
+      ])
+      setBooks(b)
+      setEntries(e)
+      setReadingLog(r)
+      setTrackedApps(t)
+      setSettings(s)
+      maybeNotifyToday(e, b.find((x) => x.id === s.active_book_id) ?? null, s)
+    } catch (err) {
+      // Without this the boot gate below waits on `settings` forever and the
+      // loading screen spins with the cause swallowed.
+      console.error('[boot] loading data failed', err)
+      setBootError(err instanceof Error ? err.message : String(err))
+    }
+  }, [authUserId])
 
   useEffect(() => {
-    if (session?.user) refresh()
-  }, [session, refresh])
+    if (authUserId) refresh()
+  }, [authUserId, refresh])
+
+  // Surface a failed boot instead of spinning on it forever.
+  if (bootError) {
+    return (
+      <div className="loading-screen">
+        <div className="loading-slow">
+          <p>Couldn't load your shelf.</p>
+          <p className="muted">{bootError}</p>
+          <div className="row">
+            <button type="button" onClick={refresh}>
+              try again
+            </button>
+          </div>
+        </div>
+      </div>
+    )
+  }
 
   // The minimum-duration floor applies only once signed in — a logged-out
   // visitor has no pages to count, so the landing page shouldn't wait on it.

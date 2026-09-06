@@ -14,10 +14,28 @@ export async function fetchSettings(userId: string): Promise<Settings> {
     default_minutes_per_page: DEFAULT_MINUTES_PER_PAGE,
     active_book_id: null,
   }
+  // Two boots can race here on a user's first sign-in (Supabase emits more than
+  // one auth event), and both will find no row and try to insert. The loser used
+  // to throw a duplicate-key error that left the app loading forever, so treat a
+  // conflict as "someone else just created it" and read theirs instead.
   const { data: inserted, error: insertError } = await supabase.from('settings').insert(defaults).select().single()
-  if (insertError) throw insertError
+  if (insertError) {
+    const { data: existing, error: reselectError } = await supabase
+      .from('settings')
+      .select('*')
+      .eq('user_id', userId)
+      .maybeSingle()
+    if (reselectError) throw reselectError
+    if (!existing) throw insertError
+    return existing as Settings
+  }
 
-  await supabase.from('tracked_apps').insert(DEFAULT_TRACKED_APPS.map((name) => ({ user_id: userId, name })))
+  await supabase
+    .from('tracked_apps')
+    .upsert(
+      DEFAULT_TRACKED_APPS.map((name) => ({ user_id: userId, name })),
+      { onConflict: 'user_id,name', ignoreDuplicates: true },
+    )
 
   return inserted as Settings
 }
