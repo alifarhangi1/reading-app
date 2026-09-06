@@ -128,12 +128,15 @@ export function Shelf({
                 ›
               </Link>
             </div>
-            <span className="muted">{formatHm(day.minutes)} logged</span>
+            <span className="day-logged">
+              <span className="muted">{formatHm(day.minutes)}</span>
+              <span className="tag">social media</span>
+            </span>
           </div>
 
           <div className="stat-block">
             <div className="stat-row">
-              <span>pages read</span>
+              <span>pages read today</span>
               <span className="value">{Math.round(day.pagesRead)}</span>
             </div>
             <div className="bar">
@@ -143,7 +146,7 @@ export function Shelf({
 
           <div className="stat-block">
             <div className="stat-row is-debt">
-              <span>pages you could've read</span>
+              <span>pages you could've read today</span>
               <span className="value">{Math.round(day.forfeited)}</span>
             </div>
             <div className="bar is-debt">

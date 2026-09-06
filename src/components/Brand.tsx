@@ -7,7 +7,7 @@
  * Brand tokens are used verbatim here (ink #1a1a1a, terracotta #b4562f) rather
  * than the app's --ink/--accent, so the mark stays exact wherever it sits.
  */
-export function BrandMark({ size = 28 }: { size?: number }) {
+export function BrandMark({ size = 28, radiusPct = 19 }: { size?: number; radiusPct?: number }) {
   return (
     <svg
       width={size}
@@ -17,8 +17,7 @@ export function BrandMark({ size = 28 }: { size?: number }) {
       aria-label="Ali's Reading App"
       className="brand-mark"
     >
-      {/* radius is ~19% of the square, per the asset sheet */}
-      <rect width="32" height="32" rx="6.1" fill="#1a1a1a" />
+      <rect width="32" height="32" rx={32 * (radiusPct / 100)} fill="#1a1a1a" />
       <circle cx="13.7" cy="19.6" r="4.05" fill="none" stroke="#ffffff" strokeWidth="3.6" />
       <rect x="16.1" y="12.9" width="3.5" height="12.5" rx="1.2" fill="#ffffff" />
       <circle cx="23" cy="23" r="2.15" fill="#b4562f" />

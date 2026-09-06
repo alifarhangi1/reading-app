@@ -1,17 +1,21 @@
 :root {
   --paper: #ffffff;
   --wash: #f7f4ee;
-  --cream: #f2efe9;
-  --ink: #1b1815;
-  --ink-soft: #1b1815a6;
-  --ink-faint: #1b18154d;
-  --rule: #1b18151f;
-  --accent: #bf5b33;
+  /* Brand cream — the ground the total panel is lifted onto (S1 spec 4). */
+  --cream: #fbf9f4;
+  --ink: #1a1a1a;
+  /* A real grey, not ink at low alpha: #999 fails contrast on cream (spec 5). */
+  --ink-soft: #6b6559;
+  --ink-faint: #9a9488;
+  --rule: #1a1a1a1f;
+  --rule-dashed: #cfcabc;
+  --accent: #b4562f;
+  /* Darker terracotta for text; the lighter one is for fills and strokes. */
+  --accent-text: #8a4525;
   --accent-wash: #fbede6;
   --shelf: #e7dbc2;
   --shelf-stripe: #dacbaa;
 
-  font-family: 'Inter', system-ui, -apple-system, sans-serif;
   line-height: 1.5;
   color: var(--ink);
 }
@@ -20,8 +24,11 @@
   box-sizing: border-box;
 }
 
+/* Patrick Hand is the brand face and carries the whole UI, numerals included;
+   only tag labels drop to a monospace (S1 spec 2). */
 body {
   margin: 0;
+  font-family: 'Patrick Hand', system-ui, sans-serif;
   background: var(--paper);
   color: var(--ink);
 }
@@ -37,26 +44,21 @@ p {
   margin: 0;
 }
 
-/* Patrick Hand is the brand type (design/brandAssets.pdf), so it is the single
-   handwriting voice — the wordmark and these callouts had been two different
-   scripts sitting on the same screen. Sized smaller than the Caveat it replaces
-   because its x-height is much larger. */
+/* Patrick Hand now carries the whole UI, so the aside needs its own voice:
+   Gloria Hallelujah, one per screen (S1 spec 2). */
 .handwritten {
-  font-family: 'Patrick Hand', cursive;
+  font-family: 'Gloria Hallelujah', cursive;
   font-weight: 400;
-  font-size: 1.15em;
-  line-height: 1.3;
+  font-size: 1em;
+  line-height: 1.45;
 }
 
 .muted {
   color: var(--ink-soft);
 }
 
-/* The book voice — same family as the fallback cover, set against the sans UI. */
 .shelf-label {
-  font-family: 'Newsreader', Georgia, serif;
-  font-style: italic;
-  font-size: 1.35rem;
+  font-size: 1.15rem;
   color: var(--ink-soft);
 }
 
@@ -244,7 +246,6 @@ legend {
 }
 
 .brand-wordmark {
-  font-family: 'Patrick Hand', cursive;
   font-size: 1.15rem;
   line-height: 1;
   white-space: nowrap;
@@ -290,6 +291,7 @@ legend {
 .content-header {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   gap: 1rem;
   padding: 2rem 2rem 0;
   max-width: 1400px;
@@ -314,6 +316,12 @@ legend {
 
 .menu-button:hover {
   background: var(--wash);
+}
+
+/* No border, no shadow — the mark carries itself (S1 spec 1). */
+.header-mark {
+  display: inline-flex;
+  line-height: 0;
 }
 
 
@@ -420,7 +428,7 @@ legend {
 
 .stat-row.is-debt,
 .stat-row.is-debt .value {
-  color: var(--accent);
+  color: var(--accent-text);
 }
 
 .bar {
@@ -541,6 +549,8 @@ legend {
   padding: 0.9rem 0.6rem;
 }
 
+/* The jacket fallback stands in for printed cover art rather than app UI, so it
+   keeps the book serif while everything else moves to Patrick Hand. */
 .book-cover-title {
   font-family: 'Newsreader', Georgia, serif;
   font-weight: 500;
@@ -729,7 +739,7 @@ legend {
 
 .log-divider {
   border: none;
-  border-top: 1px dashed var(--rule);
+  border-top: 2px dashed var(--rule-dashed);
   margin: 1.25rem 0;
 }
 
@@ -759,12 +769,8 @@ legend {
   text-align: center;
 }
 
-/* Same book voice as "currently reading" on the shelf, so panel labels read as
-   part of the brand rather than default UI text. */
 .panel-label {
-  font-family: 'Newsreader', Georgia, serif;
-  font-style: italic;
-  font-size: 1.15rem;
+  font-size: 1.05rem;
   color: var(--ink-soft);
 }
 
@@ -1413,11 +1419,19 @@ legend {
 
 /* ---------- Shelf: total panel, day stepper, all-days ---------- */
 
+/* Cream, not white: this is the one panel lifted off the page so the persistent
+   metric reads as separate from the per-day bars (S1 spec 4). */
 .total-panel {
-  border: 1px solid var(--rule);
-  border-radius: 12px;
-  padding: 1.1rem 1.25rem;
+  background: var(--cream);
+  border: 2px solid var(--ink);
+  border-radius: 11px;
+  padding: 16px 18px;
   margin-top: 1.5rem;
+}
+
+/* Kept white inside the cream panel so the ink fill has something to sit on. */
+.total-panel .bar {
+  background: #fff;
 }
 
 .total-caption {
@@ -1428,7 +1442,7 @@ legend {
 
 .shelf-divider {
   border: none;
-  border-top: 1px dashed var(--rule);
+  border-top: 2px dashed var(--rule-dashed);
   margin: 1.5rem 0;
 }
 
@@ -1467,6 +1481,25 @@ legend {
 
 .day-label {
   font-size: 1.15rem;
+}
+
+.day-logged {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* Monospace is reserved for small tag labels like this one (S1 spec 2). */
+.tag {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--accent-text);
+  background: var(--accent-wash);
+  border: 1px solid var(--accent);
+  border-radius: 4px;
+  padding: 0.15rem 0.4rem;
 }
 
 .day-actions {

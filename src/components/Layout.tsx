@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react'
 import type { ReactNode } from 'react'
+import { Link } from 'react-router-dom'
 import { Sidebar } from './Sidebar'
+import { BrandMark } from './Brand'
 
 const MOBILE_QUERY = '(max-width: 1023px)'
 
@@ -76,6 +78,13 @@ export function Layout({ children, onSignOut }: Props) {
           >
             <MenuIcon />
           </button>
+          {/* Only when the sidebar is away — expanded, its wordmark already
+              carries the brand (S1 spec 1). */}
+          {navHidden && (
+            <Link to="/shelf" className="header-mark" aria-label="Ali's Reading App">
+              <BrandMark size={34} radiusPct={24} />
+            </Link>
+          )}
         </header>
         <main className="main-content">{children}</main>
       </div>
